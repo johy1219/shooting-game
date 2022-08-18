@@ -35,16 +35,52 @@ function loadImage(){
     gameoverImage.src = "images/gameover.png";
 }
 
+let keysDown = {}
+function setupKeyboardListener() {
+    document.addEventListener("keydown", function(event) {
+        keysDown[event.keyCode] = true;
+    })
+    document.addEventListener("keyup", function(event) {
+        delete keysDown[event.keyCode];
+    })
+}
+
+function update() {
+    // 오른쪽
+    if(39 in keysDown){
+        spaceshipX += 5; // 우주선의 속도
+    }
+    // 왼쪽
+    if(37 in keysDown){
+        spaceshipX -= 5;
+    }
+
+    // 우주선이 캔버스 내에서만 움직이도록 지정
+    if(spaceshipX <= 0){
+        spaceshipX = 0;
+    }
+    if(spaceshipX >= canvas.width-64){
+        spaceshipX = canvas.width-64;
+    }
+    
+}
+
 function render() {
     ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
     ctx.drawImage(spaceshipImage, spaceshipX, spaceshipY);
 }
 
 function main(){
-    render();
+    update(); // 좌표값을 업데이트하고
+    render(); // 그려주고
     console.log("animation calls main function");
     requestAnimationFrame(main);
 }
 
 loadImage();
+setupKeyboardListener();
 main();
+
+// 방향키를 누르면
+// 우주선의 xy좌표가 바뀌고
+// 다시 render 
